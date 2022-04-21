@@ -46,8 +46,6 @@ docker-compose -f single.docker-compose.yml down --rmi local
 * Services: is the application/program that needed to be deployed and/or scaled.
 * Stacks: Group of all the services that make up your application and collect them into a single object
 
-![a](https://cdn.hashnode.com/res/hashnode/image/upload/v1632735007450/GicoD-cLy.png?auto=compress,format&format=webp)
-
 > Services & stacks are how we work with our applications and nodes are how we work with individual servers.
 
 ### Init Docker Swamr
