@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+    sql-db:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=DockerSwarm2022
+        ports:
+            - "1433:1433"
+        networks: 
+            - custom-network
+            
+    user-api:
+        # before we were using just the docker file on that project, but since now we have the Context project
+        # we need to have, in the parent folder, the Dockerfile to copy the dependencies
+        #build: ./user-api/User.Web.Api/User.Web.Api/        
+        build: ./user-api/User.Web.Api/
+        networks: 
+            - custom-network
+        ports:
+            -  "1111:80"
+            -  "2222:443"
+        environment:
+        # We set `Docker` as the  `ASPNETCORE_ENVIRONMENT` to allow us to use the `appsettings.Docker.json` file
+            - ASPNETCORE_ENVIRONMENT=Docker
+        depends_on:
+            - sql-db
+
+    product-api:
+        # before we were using just the docker file on that project, but since now we have the Context project
+        # we need to have, in the parent folder, the Dockerfile to copy the dependencies
+        #build: ./product-api/UsProducter.Web.Api/Product.Web.Api/        
+        build: ./product-api/Product.Web.Api/
+        networks: 
+            - custom-network            
+        ports:
+            -  "3333:80"
+            -  "4444:443"
+        environment:
+        # We set `Docker` as the  `ASPNETCORE_ENVIRONMENT` to allow us to use the `appsettings.Docker.json` file
+            - ASPNETCORE_ENVIRONMENT=Docker
+        depends_on:
+            - sql-db
+    ui-web:
+        build: ./web-ui/Web.Client.Ui/Web.Client.Ui
+        networks: 
+            - custom-network                 
+        ports:
+            -  "5555:80"
+            -  "6666:443"
+        environment:
+        # We set `Docker` as the  `ASPNETCORE_ENVIRONMENT` to allow us to use the `appsettings.Docker.json` file
+            - ASPNETCORE_ENVIRONMENT=Docker
+        depends_on:
+            - product-api
+            - user-api
+      
+networks:
+  custom-network:
